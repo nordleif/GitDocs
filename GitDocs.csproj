@@ -76,7 +76,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestFileSystem.cs" />
-    <Compile Include="ConsoleMiddleware.cs" />
+    <Compile Include="LogMiddleware.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

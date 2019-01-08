@@ -8,9 +8,9 @@ using Microsoft.Owin;
 
 namespace GitDocs
 {
-    public class ConsoleMiddleware : OwinMiddleware
+    public class LogMiddleware : OwinMiddleware
     {
-        public ConsoleMiddleware(OwinMiddleware next)
+        public LogMiddleware(OwinMiddleware next)
             : base(next)
         {
 
@@ -21,6 +21,10 @@ namespace GitDocs
             try
             {
                 await Next.Invoke(context);
+            }
+            catch (TaskCanceledException)
+            {
+
             }
             catch (Exception ex)
             {

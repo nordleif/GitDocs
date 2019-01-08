@@ -15,23 +15,33 @@ namespace GitDocs
     {
         static void Main(string[] args)
         {
-            var branchName = ConfigurationManager.AppSettings["BranchName"];
-            var directoryName = ConfigurationManager.AppSettings["DirectoryName"];
-            var httpUrl = ConfigurationManager.AppSettings["HttpUrl"];
-            
-            var fileServerOptions = new FileServerOptions();
-            fileServerOptions.EnableDirectoryBrowsing = true;
-            fileServerOptions.EnableDirectoryBrowsing = true;
-            fileServerOptions.FileSystem = new PhysicalFileSystem(@"D:\Source\");
-            fileServerOptions.FileSystem = new TestFileSystem(@"D:\Source\");
-            fileServerOptions.FileSystem = new GitFileSystem(directoryName, branchName);
-            
-            WebApp.Start(new StartOptions(httpUrl), (application) => {
-                application.Use<ConsoleMiddleware>();
-                application.UseFileServer(fileServerOptions);
-            });
+            try
+            {
+                var branchName = ConfigurationManager.AppSettings["BranchName"];
+                var directoryName = ConfigurationManager.AppSettings["DirectoryName"];
+                var httpUrl = ConfigurationManager.AppSettings["HttpUrl"];
 
-            Console.ReadLine();
+                var fileServerOptions = new FileServerOptions();
+                fileServerOptions.EnableDirectoryBrowsing = true;
+                fileServerOptions.EnableDirectoryBrowsing = true;
+                //fileServerOptions.FileSystem = new PhysicalFileSystem(@"D:\Source\");
+                //fileServerOptions.FileSystem = new TestFileSystem(@"D:\Source\");
+                fileServerOptions.FileSystem = new GitFileSystem(directoryName, branchName);
+
+                WebApp.Start(new StartOptions(httpUrl), (application) =>
+                {
+                    application.Use<LogMiddleware>();
+                    application.UseFileServer(fileServerOptions);
+                });
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            finally
+            {
+                Console.ReadLine();
+            }
         }
     }
 }

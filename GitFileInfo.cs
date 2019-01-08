@@ -68,6 +68,9 @@ namespace GitDocs
                 fileInfo.m_buffer = buffer;
                 fileInfo.Length = buffer.Length;
             }
+
+            //if (fileInfo.Name == "index.html")
+            //    System.Diagnostics.Debugger.Break();
             
             return fileInfo;
         }
@@ -111,3 +114,4 @@ namespace GitDocs
         #endregion
     }
 }
+

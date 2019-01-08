@@ -68,8 +68,8 @@ namespace GitDocs
             var segments = new Uri(new Uri("http://foo.bar"), subpath).Segments;
             var organizationName = segments.Length > 1 ? segments[1] : string.Empty;
             var repositoryName = segments.Length > 2 ? segments[2].TrimEnd('/') : string.Empty;
-            subpath = string.Join("", segments.Skip(3));
-
+            subpath = "docs/" + string.Join("", segments.Skip(3));
+            
             if (string.IsNullOrWhiteSpace(repositoryName))
             {
                 var path = GetFullPath(Path.Combine(m_directoryName, organizationName));
@@ -82,9 +82,9 @@ namespace GitDocs
                 foreach (var item in directories)
                     items.Add(GitFileInfo.Create(item));
 
-                //var files = directory.GetFiles();
-                //foreach (var item in files)
-                //    items.Add(GitFileInfo.Create(item));
+                var files = directory.GetFiles();
+                foreach (var item in files)
+                    items.Add(GitFileInfo.Create(item));
 
                 contents = items;
                 return true;
@@ -95,7 +95,7 @@ namespace GitDocs
                 var directory = new DirectoryInfo(path);
                 if (!directory.Exists)
                     return false;
-
+                
                 using (var repository = new Repository(path, new RepositoryOptions { }))
                 {
                     repository.Config.Set("core.autocrlf", false);
@@ -107,19 +107,20 @@ namespace GitDocs
 
                     var lastCommit = branch.Tip;
                     var tree = lastCommit.Tree;
-                    if (!string.IsNullOrWhiteSpace(subpath))
-                    {
-                        var entry = lastCommit.Tree[subpath];
-                        if (entry == null)
-                            return false;
+                    //if (!string.IsNullOrWhiteSpace(subpath))
+                    //{
+                    //    var entry = lastCommit.Tree[subpath];
+                    //    if (entry == null)
+                    //        return false;
 
-                        tree = entry.Target as Tree;
-                        if (tree == null)
-                            return false;
-                    }
+                    //    tree = entry.Target as Tree;
+                    //    if (tree == null)
+                    //        return false;
+                    //}
                     
                     var lastModified = lastCommit.Committer.When.DateTime;
                     var items = ReadGitTree(tree, lastModified).Where(i => i.GitEntryPath.Equals(Path.Combine(subpath, i.Name))).ToArray();
+
                     if (!items.Any())
                         return false;
                     
@@ -137,7 +138,7 @@ namespace GitDocs
             var segments = new Uri(new Uri("http://foo.bar"), subpath).Segments;
             var organizationName = segments.Length > 1 ? segments[1] : string.Empty;
             var repositoryName = segments.Length > 2 ? segments[2].TrimEnd('/') : string.Empty;
-            subpath = string.Join("", segments.Skip(3));
+            subpath = "docs/" + string.Join("", segments.Skip(3));
 
             if (string.IsNullOrWhiteSpace(repositoryName) || string.IsNullOrWhiteSpace(subpath))
                 return false;
